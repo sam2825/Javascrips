@@ -21,3 +21,12 @@ function jugar(eleccionUsuario) {
 }
 let eleccionUsuario = prompt("Elige Piedra, Papel o Tijeras:").toLowerCase(); 
 jugar(eleccionUsuario);
+
+while (true) {
+  let eleccionUsuario = prompt("Elige Piedra, Papel o Tijeras (o escribe 'salir' para terminar):").toLowerCase();
+  if (eleccionUsuario === "salir") {
+    console.log("Gracias por jugar. ¡Hasta luego!");
+    break;
+  }
+  jugar(eleccionUsuario);
+}
