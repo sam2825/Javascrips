@@ -19,9 +19,6 @@ function jugar(eleccionUsuario) {
     console.log("Empate.");
   }
 }
-let eleccionUsuario = prompt("Elige Piedra, Papel o Tijeras:").toLowerCase(); 
-jugar(eleccionUsuario);
-
 while (true) {
   let eleccionUsuario = prompt("Elige Piedra, Papel o Tijeras (o escribe 'salir' para terminar):").toLowerCase();
   if (eleccionUsuario === "salir") {
