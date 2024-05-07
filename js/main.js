@@ -3,36 +3,27 @@ function jugar(eleccionUsuario) {
   let eleccionMaquina = opciones[Math.floor(Math.random() * opciones.length)];
   console.log("Tu eliges: " + eleccionUsuario);
   console.log("La máquina elige: " + eleccionMaquina);
-
   if (
-      (eleccionUsuario === "piedra" && eleccionMaquina === "Tijeras") ||
-      (eleccionUsuario === "papel" && eleccionMaquina === "Piedra") ||
-      (eleccionUsuario === "tijeras" && eleccionMaquina === "Papel")
+    (eleccionUsuario === "piedra" && eleccionMaquina === "Tijeras") ||
+    (eleccionUsuario === "papel" && eleccionMaquina === "Piedra") ||
+    (eleccionUsuario === "tijeras" && eleccionMaquina === "Papel")
   ) {
-      console.log("¡Ganaste!");
+    console.log("¡Ganaste!");
   } else if (
-      (eleccionMaquina === "Piedra" && eleccionUsuario === "tijeras") ||
-      (eleccionMaquina === "Papel" && eleccionUsuario === "piedra") ||
-      (eleccionMaquina === "Tijeras" && eleccionUsuario === "papel")
+    (eleccionMaquina === "Piedra" && eleccionUsuario === "tijeras") ||
+    (eleccionMaquina === "Papel" && eleccionUsuario === "piedra") ||
+    (eleccionMaquina === "Tijeras" && eleccionUsuario === "papel")
   ) {
-      console.log("Perdiste.");
+    console.log("Perdiste.");
   } else {
-      console.log("Empate.");
+    console.log("Empate.");
   }
 }
-
-let eleccionUsuario = prompt("Elige Piedra, Papel o Tijeras:").toLowerCase(); 
-jugar(eleccionUsuario);
-
 while (true) {
   let eleccionUsuario = prompt("Elige Piedra, Papel o Tijeras (o escribe 'salir' para terminar):").toLowerCase();
-  
-if(eleccionUsuario === "salir") {
+  if (eleccionUsuario === "salir") {
     console.log("Gracias por jugar. ¡Hasta luego!");
     break;
-  }else {
-    console.log("Eleccion invalida. Por favor, elija Piedra, Papel o Tijeras.");
-
+  }
   jugar(eleccionUsuario);
-}
 }
