@@ -27,14 +27,12 @@ jugar(eleccionUsuario);
 while (true) {
   let eleccionUsuario = prompt("Elige Piedra, Papel o Tijeras (o escribe 'salir' para terminar):").toLowerCase();
   
-  if (eleccionUsuario === "piedra" || eleccionUsuario === "papel" || eleccionUsuario === "tijeras") {
-    jugar(eleccionUsuario);
-} else{
-    console.log("Eleccion invalida. Por favor, elija Piedra, Papel o Tijeras.");
-}
-  if(eleccionUsuario === "salir") {
+if(eleccionUsuario === "salir") {
     console.log("Gracias por jugar. ¡Hasta luego!");
     break;
-  }
+  }else {
+    console.log("Eleccion invalida. Por favor, elija Piedra, Papel o Tijeras.");
+
   jugar(eleccionUsuario);
+}
 }
