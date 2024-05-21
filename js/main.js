@@ -2,10 +2,9 @@ function jugar(eleccionUsuario) {
   let opciones = ["Piedra", "Papel", "Tijeras"];
   let eleccionMaquina = opciones[Math.floor(Math.random() * opciones.length)];
   console.log("Tu eliges: " + eleccionUsuario);
-  console.log("La máquina elige: " + eleccionMaquina);
-
+  console.log("La máquina elige: " + eleccionMaquina)
+  
   eleccionUsuario = eleccionUsuario.charAt(0).toUpperCase() + eleccionUsuario.slice(1);
-
   if (
     (eleccionUsuario === "Piedra" && eleccionMaquina === "Tijeras") ||
     (eleccionUsuario === "Papel" && eleccionMaquina === "Piedra") ||
