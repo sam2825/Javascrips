@@ -16,14 +16,16 @@ document.addEventListener("DOMContentLoaded", function() {
     container.style.boxShadow = "0 0 10px rgba(0,0,0,0.1)";
     container.style.textAlign = "center";
     container.style.width = "300px";
-    container.style.marginTop = "20px";  
+    container.style.marginTop = "20px";
+
     const mainTitle = document.getElementById('main-title');
     mainTitle.style.color = "#007bff";
     mainTitle.style.textAlign = "center";
     mainTitle.style.marginBottom = "20px";
 
     const gameTitle = document.getElementById('game-title');
-    gameTitle.style.color = "#007bff";  
+    gameTitle.style.color = "#007bff";
+
     const inputUserChoice = document.getElementById('user-choice');
     inputUserChoice.style.margin = "10px";
     inputUserChoice.style.padding = "10px";
@@ -36,14 +38,16 @@ document.addEventListener("DOMContentLoaded", function() {
     const buttonsContainer = document.getElementById('buttons-container');
     buttonsContainer.style.marginTop = "10px";
     buttonsContainer.style.display = "flex";
-    buttonsContainer.style.justifyContent = "center";  
+    buttonsContainer.style.justifyContent = "center";
+
     const gameResultsDiv = document.getElementById("game-results");
     gameResultsDiv.style.marginTop = "20px";
     gameResultsDiv.style.textAlign = "left";
 
     const statsDiv = document.getElementById("stats");
     statsDiv.style.marginTop = "20px";
-    statsDiv.style.textAlign = "left";  
+    statsDiv.style.textAlign = "left";
+
     const resetStatsButton = document.getElementById("reset-stats");
     resetStatsButton.style.marginTop = "20px";
     resetStatsButton.style.padding = "10px 20px";
@@ -56,7 +60,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     resetStatsButton.addEventListener("mouseover", function() {
         resetStatsButton.style.backgroundColor = "#c82333";
-    });  
+    });
+
     resetStatsButton.addEventListener("mouseout", function() {
         resetStatsButton.style.backgroundColor = "#dc3545";
     });
@@ -64,7 +69,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const ejecutarConLog = func => (...args) => {
         console.log("Ejecutando función...");
         return func(...args);
-    };  
+    };
+
     const estadisticasJuego = {
         victorias: 0,
         derrotas: 0,
@@ -96,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function() {
             limpiarResultadosAnteriores();
         },
         mostrarEstadisticas() {
-            statsDiv.innerHTML = ""; 
+            statsDiv.innerHTML = "";
             const statsResult = document.createElement("p");
             statsResult.textContent = `Victorias: ${this.victorias}, Derrotas: ${this.derrotas}, Empates: ${this.empates}`;
             statsDiv.appendChild(statsResult);
@@ -104,29 +110,30 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     const determinarResultado = (eleccionUsuario, eleccionMaquina) =>
-        (eleccionUsuario === "Piedra" && eleccionMaquina === "Tijeras") ||
-        (eleccionUsuario === "Papel" && eleccionMaquina === "Piedra") ||
-        (eleccionUsuario === "Tijeras" && eleccionMaquina === "Papel")
-            ? "¡Ganaste!":
-            (eleccionMaquina === "Piedra" && eleccionUsuario === "Tijeras") ||
-            (eleccionMaquina === "Papel" && eleccionUsuario === "Piedra") ||
-            (eleccionMaquina === "Tijeras" && eleccionUsuario === "Papel")
-                ? "Perdiste."
-                : "Empate.";  
+        (eleccionUsuario === "piedra" && eleccionMaquina === "tijeras") ||
+        (eleccionUsuario === "papel" && eleccionMaquina === "piedra") ||
+        (eleccionUsuario === "tijeras" && eleccionMaquina === "papel")
+            ? "¡Ganaste!" :
+            (eleccionMaquina === "piedra" && eleccionUsuario === "tijeras") ||
+            (eleccionMaquina === "papel" && eleccionUsuario === "piedra") ||
+            (eleccionMaquina === "tijeras" && eleccionUsuario === "papel")
+                ? "Perdiste." :
+                "Empate.";
+
     const actualizarResultados = (eleccionUsuario, eleccionMaquina, resultado) => {
-        limpiarResultadosAnteriores(); 
+        limpiarResultadosAnteriores();
         const nuevoResultado = document.createElement("p");
         nuevoResultado.textContent = `Tu eliges: ${eleccionUsuario}, La máquina elige: ${eleccionMaquina}. Resultado: ${resultado}`;
         gameResultsDiv.appendChild(nuevoResultado);
     };
 
     const limpiarResultadosAnteriores = () => {
-        
         const resultadosAnteriores = gameResultsDiv.querySelectorAll('p');
         resultadosAnteriores.forEach(resultado => resultado.remove());
-    };  
+    };
+
     const mostrarError = mensaje => {
-        limpiarResultadosAnteriores(); 
+        limpiarResultadosAnteriores();
         const errorElement = document.createElement("p");
         errorElement.textContent = mensaje;
         errorElement.style.color = "red";
@@ -135,7 +142,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const jugar = eleccionUsuario => {
         const opciones = ["Piedra", "Papel", "Tijeras"];
-        const eleccionMaquina = opciones[Math.floor(Math.random() * opciones.length)];  
+        const eleccionMaquina = opciones[Math.floor(Math.random() * opciones.length)].toLowerCase();
+        eleccionUsuario = eleccionUsuario.toLowerCase();
+
         if (!["piedra", "papel", "tijeras"].includes(eleccionUsuario)) {
             mostrarError("Error: Opción no válida. Por favor elige Piedra, Papel o Tijeras.");
             return;
@@ -143,31 +152,29 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const resultado = determinarResultado(eleccionUsuario, eleccionMaquina);
         actualizarResultados(eleccionUsuario, eleccionMaquina, resultado);
-        estadisticasJuego.actualizarEstadisticas(resultado);  
+        estadisticasJuego.actualizarEstadisticas(resultado); // Solo se llama aquí
         inputUserChoice.value = "";
 
         return resultado;
-    };  
+    };
+
     const iniciarJuegoTexto = () => {
         estadisticasJuego.cargarEstadisticas();
         estadisticasJuego.mostrarEstadisticas();
 
         inputUserChoice.style.display = "block";
-        inputUserChoice.focus();  
+        inputUserChoice.focus();
         inputUserChoice.addEventListener("keyup", function(event) {
             if (event.key === "Enter") {
                 let eleccionUsuario = inputUserChoice.value.trim().toLowerCase();
-                let resultado = jugar(eleccionUsuario);
-                if (resultado) {
-                    estadisticasJuego.actualizarEstadisticas(resultado);
-                }
+                jugar(eleccionUsuario); // Se llama solo jugar
             }
         });
     };
 
     const iniciarJuegoBotones = () => {
         estadisticasJuego.cargarEstadisticas();
-        estadisticasJuego.mostrarEstadisticas();  
+        estadisticasJuego.mostrarEstadisticas();
         const opciones = ["Piedra", "Papel", "Tijeras"];
         opciones.forEach(opcion => {
             const button = document.createElement("button");
@@ -184,18 +191,16 @@ document.addEventListener("DOMContentLoaded", function() {
             button.style.transition = "background-color 0.3s";
 
             button.addEventListener('mouseover', () => button.style.backgroundColor = "#0056b3");
-            button.addEventListener('mouseout', () => button.style.backgroundColor = "#007bff");  
+            button.addEventListener('mouseout', () => button.style.backgroundColor = "#007bff");
             button.addEventListener('click', function() {
                 let eleccionUsuario = button.dataset.choice;
-                let resultado = jugar(eleccionUsuario);
-                if (resultado) {
-                    estadisticasJuego.actualizarEstadisticas(resultado);
-                }
+                jugar(eleccionUsuario); // Se llama solo jugar
             });
 
             buttonsContainer.appendChild(button);
         });
-    };  
+    };
+
     const reiniciarEstadisticas = () => {
         estadisticasJuego.reiniciarEstadisticas();
         console.log("Estadísticas y resultados del juego reiniciados.");
@@ -203,5 +208,5 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById("start-text-input").addEventListener("click", ejecutarConLog(iniciarJuegoTexto));
     document.getElementById("start-buttons").addEventListener("click", ejecutarConLog(iniciarJuegoBotones));
-    document.getElementById("reset-stats").addEventListener("click", ejecutarConLog(reiniciarEstadisticas));  
+    document.getElementById("reset-stats").addEventListener("click", ejecutarConLog(reiniciarEstadisticas));
 });
