@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
     const body = document.body;
     body.style.fontFamily = "Arial, sans-serif";
     body.style.backgroundColor = "#f0f0f0";
@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
     body.style.alignItems = "center";
     body.style.height = "100vh";
     body.style.margin = "0";
+    body.style.transition = "background-color 0.3s, color 0.3s";
 
     const container = document.getElementById('container');
     container.style.backgroundColor = "#fff";
@@ -17,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
     container.style.textAlign = "center";
     container.style.width = "300px";
     container.style.marginTop = "20px";
+    container.style.transition = "background-color 0.3s";
 
     const mainTitle = document.getElementById('main-title');
     mainTitle.style.color = "#007bff";
@@ -48,22 +50,83 @@ document.addEventListener("DOMContentLoaded", function() {
     statsDiv.style.marginTop = "20px";
     statsDiv.style.textAlign = "left";
 
+    const styleButton = (button) => {
+        button.style.margin = "10px";
+        button.style.padding = "10px 20px";
+        button.style.border = "none";
+        button.style.borderRadius = "5px";
+        button.style.backgroundColor = "#007bff";
+        button.style.color = "#fff";
+        button.style.cursor = "pointer";
+        button.style.transition = "background-color 0.3s";
+        
+        button.addEventListener('mouseover', () => button.style.backgroundColor = "#0056b3");
+        button.addEventListener('mouseout', () => button.style.backgroundColor = "#007bff");
+    };
+
     const resetStatsButton = document.getElementById("reset-stats");
-    resetStatsButton.style.marginTop = "20px";
-    resetStatsButton.style.padding = "10px 20px";
-    resetStatsButton.style.backgroundColor = "#dc3545";
-    resetStatsButton.style.color = "#fff";
-    resetStatsButton.style.border = "none";
-    resetStatsButton.style.borderRadius = "5px";
-    resetStatsButton.style.cursor = "pointer";
-    resetStatsButton.style.transition = "background-color 0.3s";
+    styleButton(resetStatsButton);
 
-    resetStatsButton.addEventListener("mouseover", function() {
-        resetStatsButton.style.backgroundColor = "#c82333";
-    });
+    const startTextInputButton = document.getElementById("start-text-input");
+    styleButton(startTextInputButton);
 
-    resetStatsButton.addEventListener("mouseout", function() {
-        resetStatsButton.style.backgroundColor = "#dc3545";
+    const startButtonsButton = document.getElementById("start-buttons");
+    styleButton(startButtonsButton);
+
+    const toggleDarkModeButton = document.createElement("button");
+    toggleDarkModeButton.id = "toggleDarkMode";
+    toggleDarkModeButton.textContent = "🌙";
+    toggleDarkModeButton.style.position = 'fixed';
+    toggleDarkModeButton.style.top = '10px';
+    toggleDarkModeButton.style.right = '10px';
+    toggleDarkModeButton.style.width = '40px';
+    toggleDarkModeButton.style.height = '40px';
+    toggleDarkModeButton.style.borderRadius = '50%';
+    toggleDarkModeButton.style.border = 'none';
+    toggleDarkModeButton.style.backgroundColor = '#333';
+    toggleDarkModeButton.style.color = '#fff';
+    toggleDarkModeButton.style.cursor = 'pointer';
+    toggleDarkModeButton.style.fontSize = '20px';
+    toggleDarkModeButton.style.display = 'flex';
+    toggleDarkModeButton.style.justifyContent = 'center';
+    toggleDarkModeButton.style.alignItems = 'center';
+    toggleDarkModeButton.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
+    document.body.appendChild(toggleDarkModeButton);
+
+    let darkModeEnabled = false;
+
+    const enableDarkMode = () => {
+        body.style.backgroundColor = "#333";
+        body.style.color = "#fff";
+
+        container.style.backgroundColor = "#444";
+
+        toggleDarkModeButton.textContent = "☀️";
+        toggleDarkModeButton.style.backgroundColor = '#333';
+        toggleDarkModeButton.style.color = '#fff';
+
+        darkModeEnabled = true;
+    };
+
+    const disableDarkMode = () => {
+        body.style.backgroundColor = "#f0f0f0";
+        body.style.color = "#333";
+
+        container.style.backgroundColor = "#fff";
+
+        toggleDarkModeButton.textContent = "🌙";
+        toggleDarkModeButton.style.backgroundColor = '#333';
+        toggleDarkModeButton.style.color = '#fff';
+
+        darkModeEnabled = false;
+    };
+
+    toggleDarkModeButton.addEventListener("click", () => {
+        if (darkModeEnabled) {
+            disableDarkMode();
+        } else {
+            enableDarkMode();
+        }
     });
 
     const ejecutarConLog = func => (...args) => {
@@ -71,33 +134,67 @@ document.addEventListener("DOMContentLoaded", function() {
         return func(...args);
     };
 
+    const cargarEstadisticasAsync = async () => {
+        return new Promise((resolve, reject) => {
+            try {
+                const datos = localStorage.getItem("estadisticasJuego");
+                if (datos) {
+                    const estadisticas = JSON.parse(datos);
+                    resolve(estadisticas);
+                } else {
+                    resolve(null);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    };
+
+    const guardarEstadisticasAsync = async (estadisticas) => {
+        return new Promise((resolve, reject) => {
+            try {
+                const datos = JSON.stringify(estadisticas);
+                localStorage.setItem("estadisticasJuego", datos);
+                resolve();
+            } catch (error) {
+                reject(error);
+            }
+        });
+    };
+
     const estadisticasJuego = {
         victorias: 0,
         derrotas: 0,
         empates: 0,
-        cargarEstadisticas() {
-            const datos = localStorage.getItem("estadisticasJuego");
-            if (datos) {
-                const estadisticas = JSON.parse(datos);
-                Object.assign(this, estadisticas);
+        async cargarEstadisticas() {
+            try {
+                const estadisticas = await cargarEstadisticasAsync();
+                if (estadisticas) {
+                    Object.assign(this, estadisticas);
+                }
+            } catch (error) {
+                console.error("Error al cargar estadísticas:", error);
             }
         },
-        guardarEstadisticas() {
-            const datos = JSON.stringify({
-                victorias: this.victorias,
-                derrotas: this.derrotas,
-                empates: this.empates
-            });
-            localStorage.setItem("estadisticasJuego", datos);
+        async guardarEstadisticas() {
+            try {
+                await guardarEstadisticasAsync({
+                    victorias: this.victorias,
+                    derrotas: this.derrotas,
+                    empates: this.empates
+                });
+            } catch (error) {
+                console.error("Error al guardar estadísticas:", error);
+            }
         },
-        actualizarEstadisticas(resultado) {
+        async actualizarEstadisticas(resultado) {
             this[resultado === "¡Ganaste!" ? 'victorias' : resultado === "Perdiste." ? 'derrotas' : 'empates']++;
-            this.guardarEstadisticas();
+            await this.guardarEstadisticas();
             this.mostrarEstadisticas();
         },
-        reiniciarEstadisticas() {
+        async reiniciarEstadisticas() {
             this.victorias = this.derrotas = this.empates = 0;
-            this.guardarEstadisticas();
+            await this.guardarEstadisticas();
             this.mostrarEstadisticas();
             limpiarResultadosAnteriores();
         },
@@ -140,73 +237,127 @@ document.addEventListener("DOMContentLoaded", function() {
         gameResultsDiv.appendChild(errorElement);
     };
 
+    let currentGameMode = null;
+
     const jugar = eleccionUsuario => {
-        const opciones = ["Piedra", "Papel", "Tijeras"];
-        const eleccionMaquina = opciones[Math.floor(Math.random() * opciones.length)].toLowerCase();
+        const opciones = ["piedra", "papel", "tijeras"];
+        const eleccionMaquina = opciones[Math.floor(Math.random() * opciones.length)];
         eleccionUsuario = eleccionUsuario.toLowerCase();
 
-        if (!["piedra", "papel", "tijeras"].includes(eleccionUsuario)) {
+        if (!opciones.includes(eleccionUsuario)) {
             mostrarError("Error: Opción no válida. Por favor elige Piedra, Papel o Tijeras.");
             return;
         }
 
         const resultado = determinarResultado(eleccionUsuario, eleccionMaquina);
         actualizarResultados(eleccionUsuario, eleccionMaquina, resultado);
-        estadisticasJuego.actualizarEstadisticas(resultado); // Solo se llama aquí
+        estadisticasJuego.actualizarEstadisticas(resultado);
         inputUserChoice.value = "";
 
         return resultado;
     };
 
-    const iniciarJuegoTexto = () => {
-        estadisticasJuego.cargarEstadisticas();
+    const iniciarJuegoTexto = async () => {
+        limpiarResultadosAnteriores();
+        buttonsContainer.innerHTML = "";
+
+        await estadisticasJuego.cargarEstadisticas();
         estadisticasJuego.mostrarEstadisticas();
 
         inputUserChoice.style.display = "block";
         inputUserChoice.focus();
         inputUserChoice.addEventListener("keyup", function(event) {
             if (event.key === "Enter") {
-                let eleccionUsuario = inputUserChoice.value.trim().toLowerCase();
-                jugar(eleccionUsuario); // Se llama solo jugar
+                let eleccionUsuario = inputUserChoice.value.trim();
+                jugar(eleccionUsuario);
             }
         });
+
+        currentGameMode = "texto";
     };
 
-    const iniciarJuegoBotones = () => {
-        estadisticasJuego.cargarEstadisticas();
+    const iniciarJuegoBotones = async () => {
+        limpiarResultadosAnteriores();
+        inputUserChoice.style.display = "none";
+
+        await estadisticasJuego.cargarEstadisticas();
         estadisticasJuego.mostrarEstadisticas();
-        const opciones = ["Piedra", "Papel", "Tijeras"];
-        opciones.forEach(opcion => {
-            const button = document.createElement("button");
-            button.textContent = opcion;
-            button.classList.add('btn-choice');
-            button.dataset.choice = opcion.toLowerCase();
-            button.style.margin = "10px";
-            button.style.padding = "10px 20px";
-            button.style.border = "none";
-            button.style.borderRadius = "5px";
-            button.style.backgroundColor = "#007bff";
-            button.style.color = "#fff";
-            button.style.cursor = "pointer";
-            button.style.transition = "background-color 0.3s";
-
-            button.addEventListener('mouseover', () => button.style.backgroundColor = "#0056b3");
-            button.addEventListener('mouseout', () => button.style.backgroundColor = "#007bff");
-            button.addEventListener('click', function() {
-                let eleccionUsuario = button.dataset.choice;
-                jugar(eleccionUsuario); // Se llama solo jugar
+        if (buttonsContainer.children.length === 0) {
+            const opciones = [
+                { label: "Piedra", emoji: "🪨" },
+                { label: "Papel", emoji: "📃" },
+                { label: "Tijeras", emoji: "✂️" }
+            ];
+            opciones.forEach(opcion => {
+                const button = document.createElement("button");
+                button.textContent = `${opcion.label} ${opcion.emoji}`;
+                button.style.margin = "10px";
+                button.style.padding = "10px";
+                button.style.border = "none";
+                button.style.borderRadius = "5px";
+                button.style.backgroundColor = "#007bff";
+                button.style.color = "#fff";
+                button.style.cursor = "pointer";
+                button.style.transition = "background-color 0.3s";
+                button.addEventListener("click", () => jugar(opcion.label.toLowerCase()));
+                buttonsContainer.appendChild(button);
             });
+        }
 
-            buttonsContainer.appendChild(button);
-        });
+        currentGameMode = "botones";
     };
 
-    const reiniciarEstadisticas = () => {
-        estadisticasJuego.reiniciarEstadisticas();
-        console.log("Estadísticas y resultados del juego reiniciados.");
+    const resetearEstadisticas = async () => {
+        await estadisticasJuego.reiniciarEstadisticas();
     };
 
-    document.getElementById("start-text-input").addEventListener("click", ejecutarConLog(iniciarJuegoTexto));
-    document.getElementById("start-buttons").addEventListener("click", ejecutarConLog(iniciarJuegoBotones));
-    document.getElementById("reset-stats").addEventListener("click", ejecutarConLog(reiniciarEstadisticas));
+    const fetchGameConfig = async () => {
+        try {
+            const response = await fetch('https://api.example.com/game-config');
+            if (!response.ok) {
+                throw new Error('Error al obtener la configuración del juego');
+            }
+            const config = await response.json();
+            console.log('Configuración del juego:', config);
+
+        } catch (error) {
+            console.error('Error en fetchGameConfig:', error);
+        }
+    };
+
+    const sendGameStats = async (stats) => {
+        try {
+            const response = await fetch('https://api.example.com/game-stats', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(stats)
+            });
+            if (!response.ok) {
+                throw new Error('Error al enviar las estadísticas del juego');
+            }
+            console.log('Estadísticas enviadas con éxito');
+        } catch (error) {
+            console.error('Error en sendGameStats:', error);
+        }
+    };
+
+    startTextInputButton.addEventListener("click", async () => {
+        if (currentGameMode !== "texto") {
+            await iniciarJuegoTexto();
+        }
+    });
+
+    startButtonsButton.addEventListener("click", async () => {
+        if (currentGameMode !== "botones") {
+            await iniciarJuegoBotones();
+        }
+    });
+
+    resetStatsButton.addEventListener("click", async () => {
+        await resetearEstadisticas();
+    });
+
+    await fetchGameConfig();
 });
