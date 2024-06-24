@@ -311,38 +311,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         await estadisticasJuego.reiniciarEstadisticas();
     };
 
-    const fetchGameConfig = async () => {
-        try {
-            const response = await fetch('https://api.example.com/game-config');
-            if (!response.ok) {
-                throw new Error('Error al obtener la configuración del juego');
-            }
-            const config = await response.json();
-            console.log('Configuración del juego:', config);
-
-        } catch (error) {
-            console.error('Error en fetchGameConfig:', error);
-        }
-    };
-
-    const sendGameStats = async (stats) => {
-        try {
-            const response = await fetch('https://api.example.com/game-stats', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(stats)
-            });
-            if (!response.ok) {
-                throw new Error('Error al enviar las estadísticas del juego');
-            }
-            console.log('Estadísticas enviadas con éxito');
-        } catch (error) {
-            console.error('Error en sendGameStats:', error);
-        }
-    };
-
     startTextInputButton.addEventListener("click", async () => {
         if (currentGameMode !== "texto") {
             await iniciarJuegoTexto();
